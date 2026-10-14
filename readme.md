@@ -1,95 +1,176 @@
+# UCIS — Employee & Payroll Management System
 
-# Quick Start
+**ASP.NET Core Razor Pages | C# | Entity Framework Core | SQLite | Clerk | Bootstrap 5**
 
-## Auth
+UCIS is an employee and payroll management web application developed as a collaborative project. It brings together employee management, monthly payroll preparation, review and approval, period management, and reporting.
 
-### Request these details
-CLERK_CLIENT_ID=
-CLERK_CLIENT_SECRET=
-CLERK_AUTHORITY=
+The application incorporates business rules and internal controls to help maintain data accuracy, enforce appropriate access permissions, and protect finalized payroll records.
 
-### Set up secrets
-dotnet user-secrets init
+## Key Features
 
-dotnet user-secrets set "Clerk:ClientId" "YOUR_CLIENT_ID"
-dotnet user-secrets set "Clerk:ClientSecret" "YOUR_CLIENT_SECRET"
-dotnet user-secrets set "Clerk:Authority" "https://YOUR-CLERK-DOMAIN"
+### Employee Management
+- Create, view, update, and manage employee records.
+- Maintain employee information and relationships with departments and job roles.
+- Search employee records.
+- Associate employees with effective-dated salary packages for payroll processing.
 
-dotnet user-secrets list
+### Payroll Management
+- Create and manage payroll records for monthly payroll periods.
+- Automatically identify the applicable salary package based on the employee and payroll period.
+- Calculate gross and net pay using basic salary, allowances, additional earnings, and deductions.
+- Search payroll records by employee, payroll period, and processing status.
+- View payroll statistics, including record counts by status, gross pay, deductions, and net pay.
 
-### Download OIDC
-dotnet add package Microsoft.AspNetCore.Authentication.OpenIdConnect --version 10.0.0
+### Payroll Workflow and Internal Controls
+- **Preparation and approval:** Records move through Draft, Submitted, Approved, and Returned statuses, with corrections and resubmission supported.
+- **Segregation of duties:** Users cannot approve payroll records they originally prepared.
+- **Role-based authorization:** Payroll Specialists prepare and submit records, while Payroll Team Leads review, approve, and manage payroll periods.
+- **Duplicate prevention:** Only one payroll record is permitted per employee and payroll period.
+- **Period closure:** A payroll period can only be closed when every active employee has an approved payroll record.
+- **Record protection:** Approved payroll records are read-only, and closed periods are protected against further payroll changes.
 
-### Run
-dotnet build
-dotnet run --launch-profile https
-
-## Data
-
-### Download
-dotnet tool install --global dotnet-ef
-
-### Load data and migrations
-dotnet ef database update
-
-# UCIS Payroll Management System
-
-UCIS is a secure payroll management application built with ASP.NET Core Razor Pages. The system supports payroll preparation, review, approval, period management, reporting, and role-based access control.
-
-## Features
-
-- Secure authentication using Clerk and OpenID Connect
-- Role-based authorization
-- Payroll record creation and editing
-- Draft, Submitted, Returned, and Approved workflow states
-- Payroll review and approval
-- Self-approval prevention
-- Payroll period management and closure
-- Payroll statistics and reporting
-- Employee management
-- Friendly Access Denied handling
-- Responsive Bootstrap-based user interface
+### Authentication and Security
+- Authentication through Clerk using OpenID Connect.
+- Application roles determined by matching authenticated users to employee records.
+- Server-side authorization policies and protected application pages.
+- Role-specific navigation and access to payroll functionality.
+- Custom Access Denied handling.
 
 ## Technology Stack
 
-- ASP.NET Core Razor Pages
-- .NET 10
-- Entity Framework Core
-- SQLite
-- Clerk
-- OpenID Connect
-- Bootstrap 5
-- C#
-- Razor / HTML / CSS
+| Component | Technology |
+|---|---|
+| Web application | ASP.NET Core Razor Pages (.NET 10) |
+| Programming language | C# |
+| Database | SQLite |
+| Data access | Entity Framework Core |
+| Authentication | Clerk / OpenID Connect |
+| Authorization | ASP.NET Core authorization policies |
+| User interface | Razor, HTML, CSS, Bootstrap 5 |
+| Version control | Git and GitHub |
 
-## Authentication
+## My Contributions
+
+My primary responsibility was developing the **payroll module**, including its data models, business rules, workflows, user interfaces, and reporting functionality.
+
+My contributions included:
+
+- **Payroll data modeling:** Developed the SalaryPackage, PayrollPeriod, and PayrollRecord models and their relationships with employee data.
+- **Payroll preparation:** Implemented payroll record creation, editing, validation, automatic salary-package selection, and payroll calculations.
+- **Review and approval workflow:** Developed record submission, approval, return-for-correction, and resubmission functionality.
+- **Business controls:** Implemented restrictions on duplicate records, self-approval, unauthorized changes, and modifications to finalized payroll records.
+- **Payroll period management:** Developed monthly payroll period creation and closure functionality, including completeness checks.
+- **Search and statistics:** Built custom payroll search and statistics pages for record retrieval, monitoring, and reporting.
+- **Testing and integration:** Performed end-to-end testing of payroll workflows, role-based permissions, period closure, and reporting. Also contributed to UI refinements and the final application demonstration.
+
+An important part of this work was translating payroll business requirements into application functionality, rather than treating payroll as a simple data-entry process.
+
+## Team Collaboration
+
+UCIS was developed collaboratively by three team members.
+
+| Team Member | Main Contributions |
+|---|---|
+| **Zarah Z.** | Payroll module, business rules and controls, payroll search and statistics, and testing |
+| **Lila I.** | Employee management |
+| **Deonta W.** | Base application setup, Clerk authentication, role-based authorization, GitHub collaboration and branch management, and UI refinements |
+
+We used GitHub branches and pull requests to develop separate components, review changes, and integrate our work into the final application.
+
+## Design Decisions
+
+Several design decisions shaped the payroll module.
+
+**Separate salary packages from employee records**
+
+Compensation information is maintained in a separate entity with effective dates. This allows payroll processing to reference the applicable salary package without storing salary information directly in the employee record.
+
+**Use a controlled payroll workflow**
+
+Payroll records move through defined processing statuses, with separate permissions for preparation and approval. Returned records can be corrected and resubmitted.
+
+**Enforce segregation of duties**
+
+Payroll Specialists prepare and submit records, while Payroll Team Leads review and approve them. The application also prevents users from approving records they prepared themselves.
+
+**Require completeness before period closure**
+
+A payroll period cannot be finalized until every active employee has an approved payroll record.
+
+**Protect finalized payroll information**
+
+Approved payroll records and closed payroll periods are restricted from subsequent modifications.
+
+These decisions demonstrate how relational database design, application logic, and authorization can work together to support business processes and internal controls.
+
+## Current Scope and Future Enhancements
+
+UCIS was developed as a functional course project.
+
+The current implementation supports monthly payroll processing using preconfigured salary packages.
+
+Potential enhancements include:
+
+- Salary package maintenance and approval workflows.
+- Prorated pay for mid-period salary changes and employee movements.
+- Employee self-service payslips.
+- More detailed audit history and change tracking.
+- Additional payroll frequencies and processing options.
+
+---
+
+# Technical Documentation
+
+## Authentication Architecture
 
 Authentication is handled through Clerk using OpenID Connect.
 
 The application uses:
 
-- Cookie authentication for the local application session
-- OpenID Connect for Clerk authentication
-- Clerk `sub` claims for user identity
-- Clerk email claims to map authenticated users to employees in the application database
+- Cookie authentication for the local application session.
+- OpenID Connect for Clerk authentication.
+- Clerk `sub` claims to identify authenticated users.
+- Clerk email claims to match authenticated users with employee records in the application database.
 
-Application roles are loaded from the employee's associated job role.
+Application roles are obtained from each employee's associated job role.
+
+The authentication and role-mapping process follows this structure:
+
+```text
+Clerk User
+    |
+    v
+Email Claim
+    |
+    v
+Employee.Email
+    |
+    v
+Employee.JobRole
+    |
+    v
+AppRole Claim
+```
 
 ## Role-Based Access Control
 
-The application currently supports the following roles:
+The application supports the following roles:
 
 | Role | Payroll Records | Statistics | Payroll Review | Payroll Periods | Create/Edit Payroll |
-|---|---:|---:|---:|---:|---:|
+|---|---|---|---|---|---|
 | Payroll Specialist | Yes | Yes | No | No | Yes |
 | Payroll Team Lead | Yes | Yes | Yes | Yes | No |
 | Non-Payroll User | No | No | No | No | No |
 
-Unauthorized users are redirected to a custom Access Denied page.
+Payroll pages and actions are protected through authorization policies, including server-side checks.
+
+Unauthorized users are directed to a custom Access Denied page.
+
+Navigation visibility is used for convenience, while authorization restrictions are enforced on the server.
 
 ## Payroll Workflow
 
-Payroll records move through the following workflow:
+Payroll records follow a preparation, submission, review, and approval process.
 
 ```text
 Draft
@@ -97,67 +178,72 @@ Draft
   v
 Submitted
   |
-  +----> Returned
-  |         |
-  |         v
-  |      Edited
-  |         |
-  |         v
-  |      Resubmitted
-  |
-  v
-Approved
+  +------> Returned
+  |           |
+  |           v
+  |       Correction
+  |           |
+  |           v
+  |       Resubmitted
+  |           |
+  |           v
+  +------> Approved
 ```
 
 ### Payroll Specialist
 
 Payroll Specialists can:
 
-- Create payroll records
-- Edit Draft records
-- Edit Returned records
-- Delete Draft or Returned records
-- Submit Draft or Returned records for review
+- Create payroll records.
+- Edit Draft records.
+- Edit Returned records.
+- Delete Draft or Returned records.
+- Submit Draft or Returned records for review.
 
 ### Payroll Team Lead
 
 Payroll Team Leads can:
 
-- View submitted payroll records
-- Approve payroll records
-- Return payroll records for correction
-- Manage payroll periods
-- Close completed payroll periods
+- View submitted payroll records.
+- Approve payroll records.
+- Return payroll records for correction.
+- Manage payroll periods.
+- Close completed payroll periods.
 
 A Payroll Team Lead cannot approve a payroll record they originally prepared.
 
+Once approved, payroll records become read-only.
+
 ## Payroll Period Rules
+
+Payroll is processed on a monthly basis.
 
 A payroll period cannot be closed until:
 
-- A payroll record exists for every active employee
-- Every payroll record in the period has been approved
+- A payroll record exists for every active employee.
+- Every payroll record in the period has been approved.
 
 Once a payroll period is closed:
 
-- New payroll records cannot be created for that period
-- Existing payroll records cannot be edited
-- Existing payroll records cannot be deleted
-- Records cannot be submitted
-- Records cannot be approved or returned
+- New payroll records cannot be created for that period.
+- Existing payroll records cannot be edited or deleted.
+- Records cannot be submitted for review.
+- Records cannot be approved or returned.
 
-## Database
+These controls help preserve the completeness and integrity of finalized payroll periods.
+
+## Database Design
 
 The application uses Entity Framework Core with SQLite.
 
-The main entities include:
+### Main Entities
 
-- Employee
-- Department
-- JobRole
-- SalaryPackage
-- PayrollPeriod
-- PayrollRecord
+- **Employee** — Employee information, including department and job role.
+- **Department** — Organizational department information.
+- **JobRole** — Employee job roles used for application role mapping.
+- **SalaryPackage** — Basic salary, allowance, and applicable effective dates.
+- **PayrollPeriod** — Payroll processing periods and closure status.
+- **PayrollRecord** — Employee payroll transactions, calculated pay, status, and preparation/review details.
 
 Payroll records are related to:
 
@@ -165,37 +251,56 @@ Payroll records are related to:
 - Payroll periods
 - Salary packages
 
-The database also enforces one payroll record per employee per payroll period.
+The database also enforces a unique employee-and-period combination to prevent duplicate payroll records.
 
-## Authentication Configuration
+## Local Development Setup
 
-Clerk credentials should be stored using .NET User Secrets.
+### Prerequisites
 
-Initialize User Secrets:
+- .NET 10 SDK
+- A compatible development environment, such as Visual Studio
+- A Clerk application configured for OpenID Connect
+- Entity Framework Core CLI tools for database migrations
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/WlfSykhe5/UCIS-Employee-Payroll-System.git
+```
+
+Navigate to the project directory containing the application project file.
+
+### 2. Configure Clerk Authentication
+
+Clerk credentials are stored using .NET User Secrets rather than being committed to the repository.
+
+Initialize User Secrets, if not already configured:
 
 ```bash
 dotnet user-secrets init
 ```
 
-Set the Clerk configuration:
+Add the Clerk settings:
 
 ```bash
 dotnet user-secrets set "Clerk:ClientId" "YOUR_CLIENT_ID"
-
 dotnet user-secrets set "Clerk:ClientSecret" "YOUR_CLIENT_SECRET"
-
 dotnet user-secrets set "Clerk:Authority" "https://YOUR-CLERK-DOMAIN"
 ```
 
-Verify the stored secrets:
+Verify the configuration:
 
 ```bash
 dotnet user-secrets list
 ```
 
-The Clerk sign-up URL is configured in `appsettings.json`.
+The application uses the following OpenID Connect package:
 
-Example:
+```bash
+dotnet add package Microsoft.AspNetCore.Authentication.OpenIdConnect --version 10.0.0
+```
+
+The Clerk sign-up URL is configured in `appsettings.json`:
 
 ```json
 {
@@ -205,21 +310,23 @@ Example:
 }
 ```
 
-## Database Setup
+The Clerk application must also be configured with redirect URLs that match the application's local HTTPS address.
 
-Install the Entity Framework Core CLI if necessary:
+### 3. Configure the Database
+
+Install the Entity Framework Core CLI tools if needed:
 
 ```bash
 dotnet tool install --global dotnet-ef
 ```
 
-Apply migrations:
+Apply the database migrations:
 
 ```bash
 dotnet ef database update
 ```
 
-## Running the Application
+### 4. Build and Run
 
 Restore dependencies:
 
@@ -239,37 +346,19 @@ Run using the HTTPS launch profile:
 dotnet run --launch-profile https
 ```
 
-The development application runs at:
+The development application is configured to run at:
 
 ```text
 https://localhost:7219
 ```
 
-## Test Users
+### 5. Test User Roles
 
-Role assignment is based on the authenticated user's email address.
+Role assignment depends on matching the authenticated Clerk email address to an employee record.
 
 The Clerk email must match an `Employee.Email` value in the application database.
 
-Example mapping:
-
-```text
-Clerk User
-    |
-    v
-Email Claim
-    |
-    v
-Employee.Email
-    |
-    v
-Employee.JobRole
-    |
-    v
-AppRole Claim
-```
-
-Recommended test identities:
+Recommended test roles include:
 
 - Payroll Specialist
 - Payroll Team Lead
@@ -315,32 +404,25 @@ IS7012-FinalProject
 
 ## Security Controls
 
-The application includes several security controls:
+The application incorporates the following controls:
 
-- Authenticated access to protected pages
-- Role-based authorization policies
-- Server-side authorization enforcement
-- Specialist-only payroll preparation actions
-- Team Lead-only payroll review actions
-- Team Lead-only payroll period management
-- Self-approval prevention
-- Closed-period modification protection
-- Custom unauthorized-access handling
+- Authenticated access to protected pages.
+- Role-based authorization policies.
+- Server-side authorization enforcement.
+- Payroll Specialist-only preparation actions.
+- Payroll Team Lead-only review and period management actions.
+- Self-approval prevention.
+- Duplicate payroll record prevention.
+- Approved-record editing restrictions.
+- Closed-period modification protection.
+- Custom unauthorized-access handling.
 
-UI visibility is used for convenience, while authorization is enforced server-side.
+These controls are intended to demonstrate how security and business requirements can be incorporated directly into application functionality.
 
-## Project Purpose
+---
 
-This application was developed as the final project for IS7012.
+**Project:** UCIS — Employee & Payroll Management System
 
-The project demonstrates:
+**Development:** Collaborative academic project
 
-- ASP.NET Core web development
-- Razor Pages
-- Entity Framework Core
-- Relational data modeling
-- Authentication
-- Authorization
-- Business workflow enforcement
-- Secure application design
-- Bootstrap UI development
+**Repository:** [UCIS-Employee-Payroll-System](https://github.com/WlfSykhe5/UCIS-Employee-Payroll-System)
