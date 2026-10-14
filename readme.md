@@ -67,15 +67,11 @@ An important part of this work was translating payroll business requirements int
 
 ## Team Collaboration
 
-UCIS was developed collaboratively by three team members.
+UCIS was developed as a collaborative project by a three-member team, with responsibilities divided across employee management, payroll development, authentication and authorization, and application integration.
 
-| Team Member | Main Contributions |
-|---|---|
-| **Zarah Z.** | Payroll module, business rules and controls, payroll search and statistics, and testing |
-| **Lila I.** | Employee management |
-| **Deonta W.** | Base application setup, Clerk authentication, role-based authorization, GitHub collaboration and branch management, and UI refinements |
+The project involved setting up the base application, developing separate modules, integrating Clerk authentication, implementing role-based authorization, and refining the user interface.
 
-We used GitHub branches and pull requests to develop separate components, review changes, and integrate our work into the final application.
+We used GitHub branches and pull requests to develop features independently, review changes, and merge our work into the final application.
 
 ## Design Decisions
 
